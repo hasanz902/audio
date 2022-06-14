@@ -1,0 +1,146 @@
+itemID= 5666			--- itemID block
+owner= "sornq"			--- owner receive MSG
+retrive = "WiS5"	--- bot retrive off auto drop block off collect
+password="@Auto123"
+Modes= 2
+delay= 180
+
+
+x=math.floor(getBot().x/32)
+y=math.floor(getBot().y/32)
+user=getBot().name
+sendPacket(2, "action|input\n|text|/msg "..owner.." `"..math.random(0,9).."run to "..user.." x="..x.."  y="..y)
+sleep(2000)
+
+function mainDOOR()
+if getTile(math.floor(getBot().x/32), math.floor(getBot().y/32)).fg == 6 then
+sendPacket(3, "action|join_request\nname|"..getBot().world.."|b15m1ll4h\ninvitedWorld|0")
+sleep(5000)
+findPath(x,y)
+sleep(2000)
+sendPacket(2, "action|input\n|text|/msg "..owner.." `"..math.random(0,9).." x="..x.."  y="..y)
+sleep(2000)
+end
+end
+
+---CEK STATUS BOT ---
+function reconecttt()
+reconect=true
+while reconect do
+if getBot().status == "online" then
+reconect=false
+elseif getBot().status == "login fail" then
+removeBot(user)
+sleep(8000)
+addBot(user, password)
+sleep(10000)
+else
+connect()
+sleep(10000)
+end
+end
+end
+
+function gscan()
+block = 0
+for _, object in pairs(getObjects()) do
+if object.id == itemID then
+block = math.floor(block + object.count)
+end
+end
+end
+
+function offBOT()
+if math.floor(findItem(itemID)) < 1 or math.floor(findItem(itemID)) == 0 then
+collectSet(false, 2)
+sleep(2000)
+sendPacket(3, "action|quit_to_exit")
+sleep(250)
+sendPacket(3, "action|quit")
+sleep(500)
+removeBot(user)
+sleep(20000)
+addBot(user, password)
+sleep(20000)
+reconecttt()
+ppnnbb=false
+end
+end
+
+function findFLOAD(itemID)
+    for _, object in pairs(getObjects()) do
+        if object.id == itemID then
+            posx = math.floor(object.x/32)
+            posy = math.floor(object.y/32)
+			gscan()
+			sendPacket(2, "action|input\n|text|/msg "..owner.." `9Mencari block "..block)
+			findPath(posx,posy)
+			sleep(2000)
+			findPath(x, y)
+			sleep(2000)
+		
+			break
+        end
+    end
+end
+
+function pnb()
+if getTile(math.floor(getBot().x/32), math.floor(getBot().y/32)+Modes).fg == 0 then
+place(itemID,0,Modes)
+sleep(math.floor(delay/2))
+else
+punch(0,Modes)
+sleep(delay)
+punch(0,Modes)
+sleep(math.floor(delay/2))
+end
+end
+
+
+ppnnbb=true
+while ppnnbb do
+for _, player in pairs(getPlayers()) do
+if player.name == retrive then
+mulaiPNB=true
+collectSet(true, 2)
+sleep(2000)
+end
+end
+mainDOOR()
+
+if mulaiPNB then
+for i=1, 250 do
+pnb()
+end
+if math.floor(findItem(itemID)) < 1 or math.floor(findItem(itemID)) == 0 then
+findFLOAD(itemID)
+end
+gscan()
+if block == 0 then
+offBOT()
+end
+end
+
+say("/love")
+sleep(2000)
+if mulaiPNB == false then
+collectSet(false, 2)
+sleep(800)
+drop(itemID)
+sleep(2000)
+say("/sleep")
+sleep(30000)
+end
+mulaiPNB=false
+end
+
+
+
+
+
+
+
+
+
+
+
